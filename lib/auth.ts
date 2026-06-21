@@ -1,12 +1,18 @@
 import { betterAuth } from 'better-auth'
-import Database from 'better-sqlite3'
-import path from 'node:path'
-
-const dbPath = path.resolve(process.cwd(), './prisma/dev.db')
-const db = new Database(dbPath)
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { db } from './db'
+import * as schema from './db/schema'
 
 export const auth = betterAuth({
-  database: db,
+  database: drizzleAdapter(db, {
+    provider: 'pg',
+    schema: {
+      user: schema.user,
+      session: schema.session,
+      account: schema.account,
+      verification: schema.verification
+    }
+  }),
   baseURL:
     process.env.BETTER_AUTH_URL ??
     (process.env.VERCEL_PROJECT_PRODUCTION_URL

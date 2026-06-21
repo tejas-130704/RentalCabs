@@ -1,30 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import path from 'node:path'
 import bcryptjs from 'bcryptjs'
 import { nanoid } from 'nanoid'
 
 const ADMIN_USERNAME = process.env.ADMIN_DEFAULT_USERNAME || 'admin'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'admin123'
 
-function createPrismaClient() {
-  const rawUrl = process.env.DATABASE_URL || 'file:./prisma/dev.db'
-  let dbPath: string
-  if (rawUrl.startsWith('file:')) {
-    const relativePath = rawUrl.slice('file:'.length)
-    dbPath = path.resolve(process.cwd(), relativePath)
-  } else {
-    dbPath = path.resolve(process.cwd(), rawUrl)
-  }
-
-  const adapter = new PrismaBetterSqlite3({
-    url: `file:${dbPath}`
-  })
-
-  return new PrismaClient({ adapter })
-}
-
-const prisma = createPrismaClient()
+const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Seeding database...')

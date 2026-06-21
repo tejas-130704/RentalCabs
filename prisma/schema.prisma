@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Trip Details
+  tripType    String // "outstation" | "local"
+  journeyType String // "one-way" | "round-trip"
+  fromCity    String
+  toCity      String
+  journeyDate DateTime
+  journeyTime String
+  returnDate  DateTime?
+
+  // Car Details
+  carType String // "Hatchback" | "Sedan" | "Innova Crysta" etc.
+
+  // Passenger Details
+  passengerName  String
+  mobileNumber   String
+  alternatePhone String?
+  email          String?
+
+  // Fare (calculated at booking time)
+  estimatedFare Float?
+
+  // Status
+  status String @default("pending") // pending | confirmed | completed | cancelled
+
+  // Admin notes
+  adminNotes String?
+
+  @@index([mobileNumber])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
