@@ -1,4 +1,4 @@
-import { LoginForm } from '@/components/admin/login-form'
+import { LoginForm } from '../../../components/admin/login-form'
 
 export const metadata = {
   title: 'Admin Login - Chh. Sambhajinagar (Aurangabad) Tour&Travel',
