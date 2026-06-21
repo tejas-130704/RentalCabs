@@ -1,96 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/lib/db'
+import { cabBooking } from '@/lib/db/schema'
 import { getAdminSession } from '@/lib/admin-auth'
+import { eq, gte, inArray, count, sum, desc } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
   const session = await getAdminSession()
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const now = new Date()
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const weekStart = new Date(todayStart)
-    weekStart.setDate(weekStart.getDate() - 6)
+    const last7Start = new Date(todayStart)
+    last7Start.setDate(last7Start.getDate() - 6)
 
-    // Run all counts in parallel
     const [
-      todayCount,
-      pendingCount,
-      confirmedThisWeek,
-      completedCount,
-      cancelledCount,
-      totalCount,
-      revenueResult,
+      [{ todayCount }],
+      [{ pendingCount }],
+      [{ confirmedThisWeek }],
+      [{ completedCount }],
+      [{ cancelledCount }],
+      [{ totalCount }],
+      [revenueRow],
       recentBookings,
+      last7Raw,
     ] = await Promise.all([
-      // Today's bookings
-      prisma.booking.count({
-        where: { createdAt: { gte: todayStart } },
-      }),
-      // Pending bookings
-      prisma.booking.count({ where: { status: 'pending' } }),
-      // Confirmed this week
-      prisma.booking.count({
-        where: { status: 'confirmed', createdAt: { gte: weekStart } },
-      }),
-      // Completed total
-      prisma.booking.count({ where: { status: 'completed' } }),
-      // Cancelled total
-      prisma.booking.count({ where: { status: 'cancelled' } }),
-      // All time total
-      prisma.booking.count(),
-      // Total estimated revenue
-      prisma.booking.aggregate({
-        _sum: { estimatedFare: true },
-        where: { status: { in: ['confirmed', 'completed'] } },
-      }),
-      // Recent 5 bookings for dashboard
-      prisma.booking.findMany({
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-        select: {
-          id: true,
-          passengerName: true,
-          mobileNumber: true,
-          fromCity: true,
-          toCity: true,
-          carType: true,
-          status: true,
-          createdAt: true,
-          estimatedFare: true,
-        },
-      }),
+      db.select({ todayCount: count() }).from(cabBooking).where(gte(cabBooking.createdAt, todayStart)),
+      db.select({ pendingCount: count() }).from(cabBooking).where(eq(cabBooking.status, 'pending')),
+      db.select({ confirmedThisWeek: count() }).from(cabBooking).where(eq(cabBooking.status, 'confirmed')),
+      db.select({ completedCount: count() }).from(cabBooking).where(eq(cabBooking.status, 'completed')),
+      db.select({ cancelledCount: count() }).from(cabBooking).where(eq(cabBooking.status, 'cancelled')),
+      db.select({ totalCount: count() }).from(cabBooking),
+      db.select({ total: sum(cabBooking.estimatedFare) }).from(cabBooking).where(
+        inArray(cabBooking.status, ['confirmed', 'completed'])
+      ),
+      db
+        .select({
+          id: cabBooking.id,
+          passengerName: cabBooking.passengerName,
+          mobileNumber: cabBooking.mobileNumber,
+          fromCity: cabBooking.fromCity,
+          toCity: cabBooking.toCity,
+          carType: cabBooking.carType,
+          status: cabBooking.status,
+          createdAt: cabBooking.createdAt,
+          estimatedFare: cabBooking.estimatedFare,
+        })
+        .from(cabBooking)
+        .orderBy(desc(cabBooking.createdAt))
+        .limit(5),
+      // Fetch all bookings in last 7 days, group by date in JS (avoids 7 DB round-trips)
+      db.select({ createdAt: cabBooking.createdAt }).from(cabBooking).where(gte(cabBooking.createdAt, last7Start)),
     ])
 
-    // Build last-7-days chart data
+    // Build day-by-day chart from in-memory grouping
+    const dayMap: Record<string, number> = {}
+    for (const row of last7Raw) {
+      const label = new Date(row.createdAt).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' })
+      dayMap[label] = (dayMap[label] || 0) + 1
+    }
     const last7Days = []
     for (let i = 6; i >= 0; i--) {
       const day = new Date(todayStart)
       day.setDate(day.getDate() - i)
-      const nextDay = new Date(day)
-      nextDay.setDate(nextDay.getDate() + 1)
-
-      const count = await prisma.booking.count({
-        where: {
-          createdAt: { gte: day, lt: nextDay },
-        },
-      })
-
-      last7Days.push({
-        date: day.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' }),
-        count,
-      })
+      const label = day.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' })
+      last7Days.push({ date: label, count: dayMap[label] || 0 })
     }
-
-    // Status breakdown
-    const statusBreakdown = [
-      { status: 'pending', count: pendingCount },
-      { status: 'confirmed', count: confirmedThisWeek },
-      { status: 'completed', count: completedCount },
-      { status: 'cancelled', count: cancelledCount },
-    ]
 
     return NextResponse.json({
       todayCount,
@@ -99,9 +74,14 @@ export async function GET(request: NextRequest) {
       completedCount,
       cancelledCount,
       totalCount,
-      totalRevenue: revenueResult._sum.estimatedFare || 0,
+      totalRevenue: parseFloat(revenueRow?.total ?? '0'),
       last7Days,
-      statusBreakdown,
+      statusBreakdown: [
+        { status: 'pending', count: pendingCount },
+        { status: 'confirmed', count: confirmedThisWeek },
+        { status: 'completed', count: completedCount },
+        { status: 'cancelled', count: cancelledCount },
+      ],
       recentBookings,
     })
   } catch (error) {

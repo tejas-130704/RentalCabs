@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { db } from '@/lib/db'
+import { cabBooking } from '@/lib/db/schema'
 import { getAdminSession } from '@/lib/admin-auth'
+import { eq, and, or, gte, lte, ilike, desc, count, sum, SQL } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 
 export async function GET(request: NextRequest) {
   const session = await getAdminSession()
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const searchParams = request.nextUrl.searchParams
@@ -17,39 +17,30 @@ export async function GET(request: NextRequest) {
     const to = searchParams.get('to')
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
     const limit = Math.min(100, parseInt(searchParams.get('limit') || '20'))
-    const skip = (page - 1) * limit
+    const offset = (page - 1) * limit
 
-    // Build Prisma where clause
-    const where: any = {}
+    const conditions: SQL[] = []
 
-    if (status && status !== 'all') {
-      where.status = status
-    }
-
+    if (status && status !== 'all') conditions.push(eq(cabBooking.status, status))
     if (search) {
-      where.OR = [
-        { passengerName: { contains: search } },
-        { mobileNumber: { contains: search } },
-        { fromCity: { contains: search } },
-        { toCity: { contains: search } },
-        { email: { contains: search } },
-      ]
+      conditions.push(
+        or(
+          ilike(cabBooking.passengerName, `%${search}%`),
+          ilike(cabBooking.mobileNumber, `%${search}%`),
+          ilike(cabBooking.fromCity, `%${search}%`),
+          ilike(cabBooking.toCity, `%${search}%`),
+          ilike(cabBooking.email, `%${search}%`)
+        ) as SQL
+      )
     }
+    if (from) conditions.push(gte(cabBooking.createdAt, new Date(from)))
+    if (to) conditions.push(lte(cabBooking.createdAt, new Date(new Date(to).setHours(23, 59, 59, 999))))
 
-    if (from || to) {
-      where.createdAt = {}
-      if (from) where.createdAt.gte = new Date(from)
-      if (to) where.createdAt.lte = new Date(new Date(to).setHours(23, 59, 59, 999))
-    }
+    const whereClause = conditions.length ? and(...conditions) : undefined
 
-    const [bookings, total] = await Promise.all([
-      prisma.booking.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
-      }),
-      prisma.booking.count({ where }),
+    const [bookings, [{ total }]] = await Promise.all([
+      db.select().from(cabBooking).where(whereClause).orderBy(desc(cabBooking.createdAt)).limit(limit).offset(offset),
+      db.select({ total: count() }).from(cabBooking).where(whereClause),
     ])
 
     return NextResponse.json({
@@ -67,28 +58,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const session = await getAdminSession()
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const body = await request.json()
     const {
-      tripType,
-      journeyType,
-      fromCity,
-      toCity,
-      journeyDate,
-      journeyTime,
-      returnDate,
-      carType,
-      passengerName,
-      mobileNumber,
-      alternatePhone,
-      email,
-      estimatedFare,
-      status,
-      adminNotes,
+      tripType, journeyType, fromCity, toCity, journeyDate, journeyTime,
+      returnDate, carType, passengerName, mobileNumber, alternatePhone,
+      email, estimatedFare, status, adminNotes,
     } = body
 
     if (!passengerName || !mobileNumber || !fromCity || !toCity) {
@@ -98,14 +75,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const journeyDateTime = journeyDate && journeyTime
-      ? new Date(`${journeyDate}T${journeyTime}:00`)
-      : journeyDate
-        ? new Date(`${journeyDate}T00:00:00`)
-        : new Date()
+    const journeyDateTime =
+      journeyDate && journeyTime
+        ? new Date(`${journeyDate}T${journeyTime}:00`)
+        : journeyDate
+          ? new Date(`${journeyDate}T00:00:00`)
+          : new Date()
 
-    const booking = await prisma.booking.create({
-      data: {
+    const [booking] = await db
+      .insert(cabBooking)
+      .values({
         id: nanoid(10),
         tripType: tripType || 'outstation',
         journeyType: journeyType || 'one-way',
@@ -122,8 +101,8 @@ export async function POST(request: NextRequest) {
         estimatedFare: estimatedFare ? parseFloat(estimatedFare) : null,
         status: status || 'pending',
         adminNotes: adminNotes || null,
-      },
-    })
+      })
+      .returning()
 
     return NextResponse.json(booking, { status: 201 })
   } catch (error) {

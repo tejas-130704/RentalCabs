@@ -1,70 +1,35 @@
-import { prisma } from './prisma'
-
-export async function initContactDb() {
-  // Check if the old 'email' column exists in ContactMessage table.
-  // If so, drop the table to recreate it fresh with the correct schema.
-  try {
-    const columns = await prisma.$queryRawUnsafe<any[]>('PRAGMA table_info(ContactMessage)')
-    if (columns && columns.length > 0) {
-      const hasEmail = columns.some((col: any) => col.name === 'email')
-      if (hasEmail) {
-        console.log('Dropping old ContactMessage table containing "email" column...')
-        await prisma.$executeRawUnsafe('DROP TABLE ContactMessage')
-      }
-    }
-  } catch (e) {
-    // Table doesn't exist yet or query failed, which is safe to ignore
-  }
-
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS ContactMessage (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      whatsapp TEXT NOT NULL DEFAULT '',
-      message TEXT NOT NULL,
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )
-  `)
-}
+import { db } from './db'
+import { contactMessage } from './db/schema'
+import { eq, desc } from 'drizzle-orm'
+import { nanoid } from 'nanoid'
 
 export async function createContactMessage(name: string, whatsapp: string, message: string) {
-  await initContactDb()
-  const id = 'msg_' + Math.random().toString(36).substr(2, 9)
-  const createdAt = new Date().toISOString()
-  
-  await prisma.$executeRawUnsafe(
-    'INSERT INTO ContactMessage (id, name, whatsapp, message, createdAt) VALUES (?, ?, ?, ?, ?)',
-    id,
-    name,
-    whatsapp,
-    message,
-    createdAt
-  )
-  
-  return { id, name, whatsapp, message, createdAt }
+  const id = nanoid()
+  const [msg] = await db
+    .insert(contactMessage)
+    .values({ id, name, whatsapp, message })
+    .returning()
+  return msg
 }
 
 export async function getContactMessages() {
-  await initContactDb()
-  const messages = await prisma.$queryRawUnsafe<any[]>(
-    'SELECT * FROM ContactMessage ORDER BY createdAt DESC'
-  )
-  return messages || []
+  return db.select().from(contactMessage).orderBy(desc(contactMessage.createdAt))
 }
 
-export async function updateContactMessage(id: string, name: string, whatsapp: string, message: string) {
-  await initContactDb()
-  await prisma.$executeRawUnsafe(
-    'UPDATE ContactMessage SET name = ?, whatsapp = ?, message = ? WHERE id = ?',
-    name,
-    whatsapp,
-    message,
-    id
-  )
-  return { id, name, whatsapp, message }
+export async function updateContactMessage(
+  id: string,
+  name: string,
+  whatsapp: string,
+  message: string
+) {
+  const [updated] = await db
+    .update(contactMessage)
+    .set({ name, whatsapp, message, updatedAt: new Date() })
+    .where(eq(contactMessage.id, id))
+    .returning()
+  return updated
 }
 
 export async function deleteContactMessage(id: string) {
-  await initContactDb()
-  await prisma.$executeRawUnsafe('DELETE FROM ContactMessage WHERE id = ?', id)
+  await db.delete(contactMessage).where(eq(contactMessage.id, id))
 }

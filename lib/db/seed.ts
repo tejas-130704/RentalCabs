@@ -1,28 +1,27 @@
-import { PrismaClient } from '@prisma/client'
+import { db } from './index'
+import { adminUser, fareRate, fleetCar, popularRoute } from './schema'
 import bcryptjs from 'bcryptjs'
 import { nanoid } from 'nanoid'
 
 const ADMIN_USERNAME = process.env.ADMIN_DEFAULT_USERNAME || 'admin'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'admin123'
 
-const prisma = new PrismaClient()
-
 async function main() {
-  console.log('🌱 Seeding database...')
+  console.log('🌱 Seeding Drizzle database on Neon...')
 
   // Create admin user
   const hashedPassword = await bcryptjs.hash(ADMIN_PASSWORD, 10)
   try {
-    const existingAdmin = await prisma.admin.findUnique({
-      where: { username: ADMIN_USERNAME }
-    })
-    if (!existingAdmin) {
-      await prisma.admin.create({
-        data: {
-          id: nanoid(),
-          username: ADMIN_USERNAME,
-          passwordHash: hashedPassword,
-        }
+    const existing = await db
+      .select()
+      .from(adminUser)
+      .limit(1)
+
+    if (existing.length === 0) {
+      await db.insert(adminUser).values({
+        id: 'admin_' + nanoid(9),
+        username: ADMIN_USERNAME,
+        passwordHash: hashedPassword,
       })
       console.log('✅ Admin user created')
     } else {
@@ -39,8 +38,6 @@ async function main() {
       carType: 'Hatchback',
       capacity: '4+1',
       ratePerKm: '12',
-      rateNonAc: null,
-      rateAc: null,
       driverAllowance: 250,
       displayOrder: 0,
       isActive: true,
@@ -50,8 +47,6 @@ async function main() {
       carType: 'Sedan',
       capacity: '4+1',
       ratePerKm: '15',
-      rateNonAc: null,
-      rateAc: null,
       driverAllowance: 300,
       displayOrder: 1,
       isActive: true,
@@ -61,8 +56,6 @@ async function main() {
       carType: 'SUV',
       capacity: '6+1',
       ratePerKm: '18',
-      rateNonAc: null,
-      rateAc: null,
       driverAllowance: 350,
       displayOrder: 2,
       isActive: true,
@@ -72,8 +65,6 @@ async function main() {
       carType: 'Innova Crysta',
       capacity: '6+1',
       ratePerKm: '20',
-      rateNonAc: null,
-      rateAc: null,
       driverAllowance: 400,
       displayOrder: 3,
       isActive: true,
@@ -83,8 +74,6 @@ async function main() {
       carType: 'Tempo Traveller',
       capacity: '13 Seater',
       ratePerKm: '25',
-      rateNonAc: null,
-      rateAc: null,
       driverAllowance: 500,
       displayOrder: 4,
       isActive: true,
@@ -93,11 +82,7 @@ async function main() {
 
   for (const fare of fareData) {
     try {
-      await prisma.fareRate.upsert({
-        where: { carType: fare.carType },
-        update: {},
-        create: fare,
-      })
+      await db.insert(fareRate).values(fare).onConflictDoNothing()
     } catch (error) {
       console.error(`Error seeding fare rate ${fare.carType}:`, error)
     }
@@ -165,12 +150,7 @@ async function main() {
 
   for (const car of fleetData) {
     try {
-      const existing = await prisma.fleetCar.findFirst({
-        where: { name: car.name }
-      })
-      if (!existing) {
-        await prisma.fleetCar.create({ data: car })
-      }
+      await db.insert(fleetCar).values(car).onConflictDoNothing()
     } catch (error) {
       console.error(`Error seeding fleet car ${car.name}:`, error)
     }
@@ -179,17 +159,12 @@ async function main() {
 
   // Seed popular routes
   const routeData = [
-    // From (Aurangabad)
     { id: nanoid(), category: 'from-(Aurangabad)', label: '(Aurangabad) to Pune Cab Service', slug: 'arangabad-pune', displayOrder: 0, isActive: true },
     { id: nanoid(), category: 'from-(Aurangabad)', label: '(Aurangabad) to Nasik Cab', slug: '(Aurangabad)-nasik', displayOrder: 1, isActive: true },
     { id: nanoid(), category: 'from-(Aurangabad)', label: '(Aurangabad) to Indore Taxi', slug: '(Aurangabad)-indore', displayOrder: 2, isActive: true },
-
-    // Outstation
     { id: nanoid(), category: 'outstation', label: 'Pune to (Aurangabad) Round Trip', slug: 'pune-(Aurangabad)-roundtrip', displayOrder: 0, isActive: true },
     { id: nanoid(), category: 'outstation', label: 'Mumbai to (Aurangabad) Round Trip', slug: 'mumbai-(Aurangabad)-roundtrip', displayOrder: 1, isActive: true },
     { id: nanoid(), category: 'outstation', label: 'Nashik to (Aurangabad) Round Trip', slug: 'nashik-(Aurangabad)-roundtrip', displayOrder: 2, isActive: true },
-
-    // One-Way
     { id: nanoid(), category: 'one-way', label: 'One-Way Cab From (Aurangabad)', slug: 'oneway-from-(Aurangabad)', displayOrder: 0, isActive: true },
     { id: nanoid(), category: 'one-way', label: 'One-Way Cab To (Aurangabad)', slug: 'oneway-to-(Aurangabad)', displayOrder: 1, isActive: true },
     { id: nanoid(), category: 'one-way', label: 'One-Way Airport Transfer', slug: 'oneway-airport-transfer', displayOrder: 2, isActive: true },
@@ -197,12 +172,7 @@ async function main() {
 
   for (const route of routeData) {
     try {
-      const existing = await prisma.popularRoute.findFirst({
-        where: { label: route.label }
-      })
-      if (!existing) {
-        await prisma.popularRoute.create({ data: route })
-      }
+      await db.insert(popularRoute).values(route).onConflictDoNothing()
     } catch (error) {
       console.error(`Error seeding route ${route.label}:`, error)
     }
@@ -212,8 +182,4 @@ async function main() {
   console.log('✅ Database seeded successfully!')
 }
 
-main()
-  .catch(console.error)
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+main().catch(console.error)
