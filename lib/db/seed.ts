@@ -1,4 +1,6 @@
-import { db } from './index'
+import { loadEnvConfig } from '@next/env'
+loadEnvConfig(process.cwd())
+
 import { adminUser, fareRate, fleetCar, popularRoute } from './schema'
 import bcryptjs from 'bcryptjs'
 import { nanoid } from 'nanoid'
@@ -7,6 +9,7 @@ const ADMIN_USERNAME = process.env.ADMIN_DEFAULT_USERNAME || 'admin'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'admin123'
 
 async function main() {
+  const { db } = await import('./index')
   console.log('🌱 Seeding Drizzle database on Neon...')
 
   // Create admin user
