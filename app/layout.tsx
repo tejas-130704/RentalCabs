@@ -55,7 +55,7 @@ export default function RootLayout({
               "name": "Chh. Sambhajinagar (Aurangabad) Tour & Travel",
               "description": "Premium cab booking and taxi service in Chh. Sambhajinagar (Aurangabad), Maharashtra. Reliable car rentals for local, airport transfer, and outstation trips.",
               "url": "https://cab-booking-app.vercel.app", 
-              "telephone": "+91-9422980970",
+              "telephone": "+917774887006",
               "provider": {
                 "@type": "LocalBusiness",
                 "name": "Chh. Sambhajinagar (Aurangabad) Tour & Travel",

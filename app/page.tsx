@@ -17,6 +17,9 @@ import { Phone, MessageCircle, MapPin } from 'lucide-react'
 export default function Home() {
   useEffect(() => {
     // Prevent auth pages from showing unless user navigates there
+    fetch('/api/visitors/track', { method: 'POST' }).catch((err) =>
+      console.error('Error tracking visit:', err)
+    )
   }, [])
 
   return (
@@ -59,7 +62,7 @@ export default function Home() {
                 </a>
 
                 <a
-                  href="tel:+919422980970"
+                  href="tel:+917774887006"
                   className="border-2 border-border text-foreground hover:bg-muted px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 inline-flex items-center justify-center gap-2"
                 >
                   Call Now
@@ -133,7 +136,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="tel:+919422980970"
+                href="tel:+917774887006"
                 className="flex items-center justify-center gap-2 bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-3 px-6 rounded-full transition-all duration-300 hover:scale-105"
               >
                 <Phone size={20} />
@@ -141,7 +144,7 @@ export default function Home() {
               </a>
 
               <a
-                href="https://wa.me/919422980970?text=Hi, I want to book a cab"
+                href="https://wa.me/917774887006?text=Hi, I want to book a cab"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA58] text-white font-bold py-3 px-6 rounded-full transition-all duration-300 hover:scale-105"

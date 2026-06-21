@@ -65,7 +65,7 @@ export function ContactSection() {
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Phone</h3>
                   <p className="text-muted-foreground">
-                    <a href="tel:+919422980970" className="hover:underline">+91-9422980970</a> / <a href="tel:+918421684040" className="hover:underline">+91-8421684040</a>
+                    <a href="tel:+917774887006" className="hover:underline">+91-7774887006</a>{/* / <a href="tel:+918421684040" className="hover:underline">+91-8421684040</a> */}
                   </p>
                   <p className="text-sm text-muted-foreground">Available 24/7 for bookings</p>
                 </div>
@@ -78,7 +78,7 @@ export function ContactSection() {
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Email</h3>
                   <p className="text-muted-foreground">
-                    <a href="mailto:contact@cabs.com" className="hover:underline">contact@cabs.com</a>
+                    <a href="mailto:aurangabadtoursandtraveles@gmail.com" className="hover:underline">aurangabadtoursandtraveles@gmail.com</a>
                   </p>
                   <p className="text-sm text-muted-foreground">
                     We respond within 2 hours
@@ -94,7 +94,7 @@ export function ContactSection() {
                   <h3 className="font-semibold text-foreground mb-1">WhatsApp Chat</h3>
                   <p className="text-muted-foreground">
                     <a
-                      href="https://wa.me/919422980970?text=Hi,%20I%20have%20a%20question%20about%20booking%20a%20cab"
+                      href="https://wa.me/917774887006?text=Hi,%20I%20have%20a%20question%20about%20booking%20a%20cab"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline text-green-600 font-medium"

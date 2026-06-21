@@ -44,6 +44,7 @@ export function Navbar() {
 
           {/* Phone Numbers - Desktop */}
           <div className="hidden md:flex items-center gap-3">
+            {/*
             <a
               href="tel:+918421684040"
               className="bg-[#1A3263] hover:bg-[#233F78] text-white px-5 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-1.5"
@@ -51,12 +52,13 @@ export function Navbar() {
               <Phone size={14} />
               <span>+91-8421684040</span>
             </a>
+            */}
             <a
-              href="tel:+919422980970"
+              href="tel:+917774887006"
               className="bg-[#FFC570] hover:bg-[#ffb64d] text-[#1A3263] px-5 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-1.5"
             >
               <Phone size={14} />
-              <span>+91-9422980970</span>
+              <span>+91-7774887006</span>
             </a>
           </div>
 
@@ -115,6 +117,7 @@ export function Navbar() {
             </Link>
 
             <div className="flex flex-col gap-2 pt-2">
+              {/*
               <a
                 href="tel:+918421684040"
                 className="w-full bg-[#1A3263] text-white py-2 rounded-full font-bold text-sm text-center flex items-center justify-center gap-2"
@@ -122,12 +125,13 @@ export function Navbar() {
                 <Phone size={14} />
                 <span>+91-8421684040</span>
               </a>
+              */}
               <a
-                href="tel:+919422980970"
+                href="tel:+917774887006"
                 className="w-full bg-[#FFC570] text-[#1A3263] py-2 rounded-full font-bold text-sm text-center flex items-center justify-center gap-2"
               >
                 <Phone size={14} />
-                <span>+91-9422980970</span>
+                <span>+91-7774887006</span>
               </a>
             </div>
           </div>

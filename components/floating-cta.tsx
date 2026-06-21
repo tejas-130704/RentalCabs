@@ -3,8 +3,8 @@
 import { Phone, MessageCircle, Car } from 'lucide-react'
 
 function FloatingCTA() {
-  const whatsappNumber = '919422980970'
-  const phoneNumber = '+919422980970'
+  const whatsappNumber = '917774887006'
+  const phoneNumber = '+917774887006'
   const whatsappMessage = "Hi, I want to book a cab from Chh. Sambhajinagar (Aurangabad) Tour&Travel"
 
   return (

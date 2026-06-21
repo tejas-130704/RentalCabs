@@ -138,3 +138,13 @@ export const contactMessage = pgTable('contact_message', {
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 })
+
+// --- Visitor Tracking --------------------------------------------------------
+
+export const visitorLog = pgTable('visitor_log', {
+  id: text('id').primaryKey(),
+  ipHash: text('ip_hash').notNull(),
+  userAgent: text('user_agent'),
+  visitedAt: timestamp('visited_at').notNull().defaultNow(),
+})
+

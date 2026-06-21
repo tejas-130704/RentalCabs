@@ -101,14 +101,14 @@ export default function BookingConfirmationModal({
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-2.5">
               <a
-                href="tel:+919422980970"
+                href="tel:+917774887006"
                 className="flex items-center justify-center gap-1.5 bg-primary hover:bg-[#233F78] text-white font-bold py-2 px-3 rounded-lg transition-all duration-300 hover:shadow-lg text-xs text-center"
               >
                 <Phone size={14} />
                 <span>Call Now</span>
               </a>
               <a
-                href={`https://wa.me/919422980970?text=${encodeURIComponent(whatsappMessage)}`}
+                href={`https://wa.me/917774887006?text=${encodeURIComponent(whatsappMessage)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#20BA58] text-white font-bold py-2 px-3 rounded-lg transition-all duration-300 hover:shadow-lg text-xs text-center"

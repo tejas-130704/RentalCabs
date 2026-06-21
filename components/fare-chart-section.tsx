@@ -14,75 +14,6 @@ interface FareItem {
   isActive: boolean
 }
 
-const staticFares: FareItem[] = [
-  {
-    id: 'fare-hatchback',
-    carType: 'Hatchback',
-    capacity: '4 + 1',
-    ratePerKm: '12.00',
-    driverAllowance: 300,
-    isActive: true,
-  },
-  {
-    id: 'fare-sedan',
-    carType: 'Sedan',
-    capacity: '4 + 1',
-    ratePerKm: '13.00',
-    driverAllowance: 300,
-    isActive: true,
-  },
-  {
-    id: 'fare-ertiga',
-    carType: 'Ertiga, Xylo, Tavera',
-    capacity: '6 + 1',
-    ratePerKm: '15.00',
-    driverAllowance: 300,
-    isActive: true,
-  },
-  {
-    id: 'fare-tourist-innova',
-    carType: 'Tourist Special Innova',
-    capacity: '6 + 1',
-    ratePerKm: '17.00',
-    driverAllowance: 300,
-    isActive: true,
-  },
-  {
-    id: 'fare-innova-crysta',
-    carType: 'Innova Crysta',
-    capacity: '6 + 1',
-    ratePerKm: '20.00',
-    driverAllowance: 300,
-    isActive: true,
-  },
-  {
-    id: 'fare-tempo-13',
-    carType: 'Tempo Traveller',
-    capacity: '13 Seater',
-    rateNonAc: '27.00',
-    rateAc: '30.00',
-    driverAllowance: 400,
-    isActive: true,
-  },
-  {
-    id: 'fare-tempo-17',
-    carType: 'Tempo Traveller',
-    capacity: '17 Seater',
-    rateNonAc: '27.00',
-    rateAc: '30.00',
-    driverAllowance: 400,
-    isActive: true,
-  },
-  {
-    id: 'fare-minibus',
-    carType: 'Mini Bus',
-    capacity: '27, 32, 50 Seater',
-    ratePerKm: '42.00',
-    driverAllowance: 400,
-    isActive: true,
-  },
-]
-
 export default function FareChartSection() {
   const [dbFares, setDbFares] = useState<FareItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -90,7 +21,7 @@ export default function FareChartSection() {
   useEffect(() => {
     async function loadFares() {
       try {
-        const res = await fetch('/api/fares')
+        const res = await fetch('/api/fares', { cache: 'no-store' })
         if (res.ok) {
           const data = await res.json()
           setDbFares(data.map((f: any) => ({
@@ -107,7 +38,11 @@ export default function FareChartSection() {
     loadFares()
   }, [])
 
-  const fares = dbFares.length > 0 ? dbFares : staticFares.filter((f: FareItem) => f.isActive)
+  const fares = dbFares
+
+  const formatCarType = (carType: string) => {
+    return carType.replace(/\s+\d+$/, '')
+  }
 
   const formatPrice = (fare: FareItem) => {
     if (fare.ratePerKm) {
@@ -117,7 +52,7 @@ export default function FareChartSection() {
     if (fare.rateNonAc && fare.rateAc) {
       const nonAcStr = String(fare.rateNonAc).replace(/\.00$/, '')
       const acStr = String(fare.rateAc).replace(/\.00$/, '')
-      if (fare.id === 'fare-tempo-17') {
+      if (fare.capacity === '17 Seater' || fare.carType.includes('17')) {
         return `Non-A/c-${nonAcStr} A/c-${acStr}`
       }
       return `Non-A/C-${nonAcStr}, A/C-${acStr}`
@@ -130,6 +65,17 @@ export default function FareChartSection() {
     if (bookingWidget) {
       bookingWidget.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  if (loading) {
+    return (
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[300px]">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
+          <p className="text-sm text-muted-foreground mt-3 font-poppins">Loading cab fares...</p>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -160,7 +106,7 @@ export default function FareChartSection() {
                   className={`border-b border-border last:border-b-0 hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? 'bg-card' : 'bg-muted/10'
                     }`}
                 >
-                  <td className="px-6 py-4 text-sm text-foreground border-r border-border last:border-r-0 font-normal">{fare.carType}</td>
+                  <td className="px-6 py-4 text-sm text-foreground border-r border-border last:border-r-0 font-normal">{formatCarType(fare.carType)}</td>
                   <td className="px-6 py-4 text-sm text-foreground border-r border-border last:border-r-0 font-normal">{fare.capacity}</td>
                   <td className="px-6 py-4 text-sm text-foreground border-r border-border last:border-r-0 font-normal">{formatPrice(fare)}</td>
                   <td className="px-6 py-4 text-sm text-foreground border-r border-border last:border-r-0 font-normal">{fare.driverAllowance}</td>
@@ -183,7 +129,7 @@ export default function FareChartSection() {
           {fares.map((fare) => (
             <Card key={fare.id} className="p-6 border border-border shadow-sm bg-card text-card-foreground">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-bold text-primary">{fare.carType}</h3>
+                <h3 className="text-lg font-bold text-primary">{formatCarType(fare.carType)}</h3>
                 <span className="text-xs font-bold bg-accent/20 text-primary px-3 py-1 rounded-full">
                   {fare.capacity}
                 </span>

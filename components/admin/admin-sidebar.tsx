@@ -12,7 +12,8 @@ import {
   MessageSquare,
   Menu,
   X,
-  Shield
+  Shield,
+  Eye
 } from 'lucide-react'
 
 const MENU_ITEMS = [
@@ -27,24 +28,19 @@ const MENU_ITEMS = [
     icon: ClipboardList,
   },
   {
-    title: 'Fleet',
-    href: '/admin/fleet',
-    icon: Car,
-  },
-  {
     title: 'Fares',
     href: '/admin/fares',
     icon: Tag,
   },
   {
-    title: 'Routes',
-    href: '/admin/routes',
-    icon: MapPin,
-  },
-  {
     title: 'Messages',
     href: '/admin/messages',
     icon: MessageSquare,
+  },
+  {
+    title: 'Viewers',
+    href: '/admin/viewers',
+    icon: Eye,
   },
 ]
 
