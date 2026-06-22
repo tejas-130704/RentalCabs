@@ -45,7 +45,7 @@ export default async function BookingsPage() {
               </p>
               <Button
                 onClick={() => window.location.href = '/'}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground dark:bg-secondary dark:text-white"
               >
                 Book a Ride
               </Button>

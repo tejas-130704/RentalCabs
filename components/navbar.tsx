@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Menu, X, Phone } from 'lucide-react'
 import { useState } from 'react'
+import { ThemeToggle } from './theme-toggle'
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -18,7 +19,7 @@ export function Navbar() {
               className="w-12 h-12 rounded-full object-cover object-center shrink-0"
             />
             <div className="flex flex-col leading-tight">
-              <span className="font-bold text-sm sm:text-base text-[#1A3263] font-poppins whitespace-nowrap">Chh. Sambhajinagar</span>
+              <span className="font-bold text-sm sm:text-base text-primary font-poppins whitespace-nowrap">Chh. Sambhajinagar</span>
               <span className="text-[10px] sm:text-xs text-gray-500 font-medium font-poppins whitespace-nowrap">(Aurangabad) Tour&Travel</span>
             </div>
           </Link>
@@ -55,11 +56,12 @@ export function Navbar() {
             */}
             <a
               href="tel:+917774887006"
-              className="bg-[#FFC570] hover:bg-[#ffb64d] text-[#1A3263] px-5 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-1.5"
+              className="bg-[#FFC570] hover:bg-[#ffb64d] text-[#1A3263] dark:bg-secondary dark:text-white dark:hover:bg-secondary/80 px-5 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-1.5"
             >
               <Phone size={14} />
               <span>+91-7774887006</span>
             </a>
+            <ThemeToggle />
           </div>
 
           {/* Mobile Menu Button */}
@@ -128,11 +130,14 @@ export function Navbar() {
               */}
               <a
                 href="tel:+917774887006"
-                className="w-full bg-[#FFC570] text-[#1A3263] py-2 rounded-full font-bold text-sm text-center flex items-center justify-center gap-2"
+                className="w-full bg-[#FFC570] text-[#1A3263] dark:bg-secondary dark:text-white py-2 rounded-full font-bold text-sm text-center flex items-center justify-center gap-2"
               >
                 <Phone size={14} />
                 <span>+91-7774887006</span>
               </a>
+              <div className="flex justify-center pt-2">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         )}

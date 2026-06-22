@@ -171,7 +171,7 @@ export function ContactSection() {
                 type="submit"
                 size="lg"
                 disabled={loading}
-                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground flex items-center justify-center gap-2 cursor-pointer dark:bg-secondary dark:text-white dark:hover:bg-secondary/80"
               >
                 {loading && <Loader2 size={18} className="animate-spin" />}
                 {loading ? 'Sending...' : 'Send Message'}

@@ -133,21 +133,21 @@ export function BookingWidget() {
   return (
     <>
       <div id="booking-widget" className="bg-card border border-border text-card-foreground rounded-2xl shadow-2xl p-6 md:p-8 max-w-4xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-[#1A3263] mb-2">Book Your Ride Now</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-primary mb-2">Book Your Ride Now</h2>
         <p className="text-muted-foreground mb-6">Quick and easy cab booking in just 3 steps</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Trip Type Selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 Trip Type
               </label>
               <select
                 name="tripType"
                 value={formData.tripType}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="outstation">Outstation</option>
                 <option value="local">Local</option>
@@ -155,14 +155,14 @@ export function BookingWidget() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 Journey Type
               </label>
               <select
                 name="journeyType"
                 value={formData.journeyType}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="one-way">One Way</option>
                 <option value="round-trip">Round Trip</option>
@@ -173,7 +173,7 @@ export function BookingWidget() {
           {/* Location & Date */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 <MapPin className="inline w-4 h-4 mr-1" />
                 From City
               </label>
@@ -183,7 +183,7 @@ export function BookingWidget() {
                 value={formData.fromCity}
                 onChange={handleInputChange}
                 placeholder="e.g., (Aurangabad)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.fromCity && (
                 <p className="text-red-500 text-sm mt-1">{errors.fromCity}</p>
@@ -191,7 +191,7 @@ export function BookingWidget() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 <MapPin className="inline w-4 h-4 mr-1" />
                 To City
               </label>
@@ -201,7 +201,7 @@ export function BookingWidget() {
                 value={formData.toCity}
                 onChange={handleInputChange}
                 placeholder="e.g., Pune"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.toCity && (
                 <p className="text-red-500 text-sm mt-1">{errors.toCity}</p>
@@ -212,7 +212,7 @@ export function BookingWidget() {
           {/* Date & Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 <Calendar className="inline w-4 h-4 mr-1" />
                 Journey Date
               </label>
@@ -221,7 +221,7 @@ export function BookingWidget() {
                 name="journeyDate"
                 value={formData.journeyDate}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.journeyDate && (
                 <p className="text-red-500 text-sm mt-1">{errors.journeyDate}</p>
@@ -229,7 +229,7 @@ export function BookingWidget() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 <Clock className="inline w-4 h-4 mr-1" />
                 Journey Time
               </label>
@@ -238,7 +238,7 @@ export function BookingWidget() {
                 name="journeyTime"
                 value={formData.journeyTime}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.journeyTime && (
                 <p className="text-red-500 text-sm mt-1">{errors.journeyTime}</p>
@@ -249,7 +249,7 @@ export function BookingWidget() {
           {/* Return Date (if round trip) */}
           {formData.journeyType === 'round-trip' && (
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 <Calendar className="inline w-4 h-4 mr-1" />
                 Return Date
               </label>
@@ -258,14 +258,14 @@ export function BookingWidget() {
                 name="returnDate"
                 value={formData.returnDate}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           )}
 
           {/* Car Type */}
           <div>
-            <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+            <label className="block text-sm font-semibold text-primary mb-2">
               <Car className="inline w-4 h-4 mr-1" />
               Select Car Type
             </label>
@@ -273,7 +273,7 @@ export function BookingWidget() {
               name="carType"
               value={formData.carType}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+              className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {carTypes.map((car) => (
                 <option key={car} value={car}>
@@ -286,7 +286,7 @@ export function BookingWidget() {
           {/* Passenger Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 Passenger Name
               </label>
               <input
@@ -295,7 +295,7 @@ export function BookingWidget() {
                 value={formData.passengerName}
                 onChange={handleInputChange}
                 placeholder="Your full name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.passengerName && (
                 <p className="text-red-500 text-sm mt-1">{errors.passengerName}</p>
@@ -303,7 +303,7 @@ export function BookingWidget() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 Mobile Number
               </label>
               <input
@@ -312,7 +312,7 @@ export function BookingWidget() {
                 value={formData.mobileNumber}
                 onChange={handleInputChange}
                 placeholder="10-digit mobile number"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.mobileNumber && (
                 <p className="text-red-500 text-sm mt-1">{errors.mobileNumber}</p>
@@ -323,7 +323,7 @@ export function BookingWidget() {
           {/* Optional Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 Alternate Phone (Optional)
               </label>
               <input
@@ -332,12 +332,12 @@ export function BookingWidget() {
                 value={formData.alternatePhone}
                 onChange={handleInputChange}
                 placeholder="Alternate contact"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#1A3263] mb-2">
+              <label className="block text-sm font-semibold text-primary mb-2">
                 Email (Optional)
               </label>
               <input
@@ -346,7 +346,7 @@ export function BookingWidget() {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="your@email.com"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A3263]"
+                className="w-full px-4 py-2 border border-border bg-input text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -355,7 +355,7 @@ export function BookingWidget() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-3 text-lg rounded-full transition-all duration-300 hover:scale-105 disabled:opacity-50 cursor-pointer"
+            className="w-full bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-3 text-lg rounded-full transition-all duration-300 hover:scale-105 disabled:opacity-50 cursor-pointer dark:bg-secondary dark:text-white dark:hover:bg-secondary/80"
           >
             {loading ? 'Booking...' : 'Book Now'}
           </Button>

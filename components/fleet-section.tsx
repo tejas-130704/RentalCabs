@@ -81,7 +81,7 @@ export function FleetSection() {
   const vehicles = staticFleet.filter((v: FleetCar) => v.isActive)
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
@@ -149,7 +149,7 @@ export function FleetSection() {
                 </div>
 
                 {/* CTA Button */}
-                <button className="w-full mt-4 bg-accent text-primary font-semibold py-2 rounded-lg hover:opacity-90 transition-opacity">
+                <button className="w-full mt-4 bg-accent text-primary font-semibold py-2 rounded-lg hover:opacity-90 transition-opacity dark:bg-secondary dark:text-white dark:hover:bg-secondary/80">
                   Book Now
                 </button>
               </div>

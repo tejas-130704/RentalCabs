@@ -25,15 +25,15 @@ function FloatingCTA() {
         {/* Call Button */}
         <a
           href={`tel:${phoneNumber}`}
-          className="w-16 h-16 rounded-full bg-primary hover:bg-primary/95 text-white flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
+          className="w-16 h-16 rounded-full bg-primary hover:bg-primary/95 text-white flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 dark:bg-secondary"
           aria-label="Call us"
         >
-          <Phone size={28} fill="currentColor" className="text-accent" />
+          <Phone size={28} fill="currentColor" className="text-accent dark:text-white dark:fill-white" />
         </a>
       </div>
 
       {/* Mobile Bottom Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-2xl">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 shadow-2xl">
         <div className="grid grid-cols-3 gap-0 p-4 max-w-lg mx-auto">
           {/* Call Button */}
           <a

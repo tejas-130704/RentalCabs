@@ -113,7 +113,7 @@ export default function FareChartSection() {
                   <td className="px-6 py-4 text-sm border-r border-border last:border-r-0 text-center">
                     <button
                       onClick={handleBookNow}
-                      className="bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-2 px-6 rounded text-xs transition-all duration-300 active:scale-95 cursor-pointer"
+                      className="bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-2 px-6 rounded text-xs transition-all duration-300 active:scale-95 cursor-pointer dark:bg-secondary dark:text-white dark:hover:bg-secondary/80"
                     >
                       Book Now
                     </button>
@@ -146,7 +146,7 @@ export default function FareChartSection() {
               </div>
               <button
                 onClick={handleBookNow}
-                className="w-full bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-2 rounded text-sm transition-all duration-300 cursor-pointer"
+                className="w-full bg-accent hover:bg-accent/95 text-accent-foreground font-bold py-2 rounded text-sm transition-all duration-300 cursor-pointer dark:bg-secondary dark:text-white dark:hover:bg-secondary/80"
               >
                 Book Now
               </button>

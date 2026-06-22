@@ -89,7 +89,7 @@ export function RoutesSection() {
             const categoryRoutes = groupedRoutes[categoryKey] || []
 
             return (
-              <div key={categoryKey} className="bg-white rounded-xl border border-border p-6 hover:shadow-lg transition-shadow">
+              <div key={categoryKey} className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-bold text-primary mb-6">{categoryTitle}</h3>
 
                 <div className="space-y-3">
@@ -112,7 +112,7 @@ export function RoutesSection() {
                   )}
                 </div>
 
-                <button className="w-full mt-6 px-4 py-2 bg-accent text-primary font-semibold rounded-lg hover:opacity-90 transition-opacity text-sm">
+                <button className="w-full mt-6 px-4 py-2 bg-accent text-primary font-semibold rounded-lg hover:opacity-90 transition-opacity text-sm dark:bg-secondary dark:text-white dark:hover:bg-secondary/80">
                   Book Route
                 </button>
               </div>
